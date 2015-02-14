@@ -43,9 +43,31 @@ class Waly {
 		return $return;
 	}
 
-	public function getCategories($childOf = 0, $orderby = 'name')
+
+	/**
+	 * Finds subcategories by ID or slug
+	 * @param  integer|string $childOf ID or category slug
+	 * @param  string  $orderby      Sort categories alphabetically or by unique category.
+	 * @param  string  $order        Sort order for categories (either ascending or descending).
+	 * @param  boolean $hierarchical  When true, the results will include sub-categories that are empty, as long as those sub-categories have sub-categories that are not empty.
+	 * @return array|exception
+	 */
+	public function getCategories($childOf = 0, $orderby = 'name', $order = 'ASC', $hierarchical = FALSE)
 	{
-		$return = [];
+		$return = array();
+
+		$allowedArgValues = array(
+			'orderby'      => array('id','name','slug','count','term_group'),
+			'order'        => array('ASC', 'DESC'),
+			'hierarchical' => array(TRUE, FALSE),
+		);
+		foreach ($allowedArgValues as $argument => $values) {
+			foreach ($values as $value) {
+				if (!in_array($value, $$argument)) {
+					throw new \Exception("Unknow argumenta value '{$value}' for argument '{$argument}' in method '{__FUNCTION__}'");
+				}
+			}
+		}
 
 		if (is_string($childOf)) {
 			$parent = new Category(get_category_by_slug($childOf));
@@ -59,7 +81,7 @@ class Waly {
 			'orderby'                  => $orderby,
 			'order'                    => 'ASC',
 			'hide_empty'               => 0, //!!!!
-			'hierarchical'             => 1,
+			'hierarchical'             => $hierarchical,
 			'exclude'                  => '',
 			'include'                  => '',
 			'number'                   => '',
