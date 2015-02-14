@@ -8,7 +8,13 @@ use Lucien144\Wordpress\Waly\Post,
 class Waly {
 
 	public function getPost($id = NULL) {
-		return new Post(get_post($id == NULL ? get_the_ID() : $id));
+		if (is_string($id)) {
+			global $wpdb;
+			$id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_name = '" . mysql_escape_string($id) . "'");
+			return new Post($id);
+		} else {
+			return new Post(get_post($id == NULL ? get_the_ID() : $id));
+		}
 	}
 
 	public static function getPosts($category, $limit = 10000, $orderby = 'date', $order = 'asc', $offset = 0, $postType = 'post', $postStatus = 'publish')
