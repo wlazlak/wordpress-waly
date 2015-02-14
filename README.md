@@ -1,11 +1,12 @@
 # Waly
-An OOP layer for Wordpress 
+An OOP layer for Wordpress. This library simplify the work with ~messed~ Wordpress API. 
+Main purpose was to be used in Wordpress templates.
 
 # Main features
-- All get methods allow you to find by ID or slug Waly::getPost(1) vs. Waly::getPost('blog')
-- Object chaining: Waly::getPost()->author->email
-- Extended objects: Waly::getCategory()->link // Calls get_category_link($id)
-- Fix the naming convention of WP object parameters: Waly::getCategory()->id // Fixing the dumb Waly::getCategory()->cat_ID
+- All get methods allow you to find by ID or slug `Waly::getPost(1)` vs. `Waly::getPost('blog')`
+- Object chaining: `Waly::getPost()->author->email`
+- Extended objects: `Waly::getCategory()->link // Calls get_category_link($id)`
+- Fix the naming convention of WP object parameters: `Waly::getCategory()->id // Fixing the dumb Waly::getCategory()->cat_ID`
 
 # Usage
 ```php
