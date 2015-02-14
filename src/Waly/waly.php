@@ -64,7 +64,7 @@ class Waly {
 		foreach ($allowedArgValues as $argument => $values) {
 			foreach ($values as $value) {
 				if (!in_array($value, $$argument)) {
-					throw new \Exception("Unknow argumenta value '{$value}' for argument '{$argument}' in method '{__FUNCTION__}'");
+					throw new \Exception("Unknow argumenta value '{$value}' for argument '{$argument}' in method '{" . __FUNCTION__ . "}'");
 				}
 			}
 		}
