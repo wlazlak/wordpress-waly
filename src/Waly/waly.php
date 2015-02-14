@@ -11,7 +11,7 @@ class Waly {
 		if (is_string($id)) {
 			global $wpdb;
 			$id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_name = '" . mysql_escape_string($id) . "'");
-			return new Post($id);
+			return new Post(get_post($id));
 		} else {
 			return new Post(get_post($id == NULL ? get_the_ID() : $id));
 		}
