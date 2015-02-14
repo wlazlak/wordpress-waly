@@ -18,6 +18,9 @@ class Category {
 			case 'id':
 				return $this->category->cat_ID;
 				break;
+			case 'link':
+				return get_category_link($this->category->cat_ID);
+				break;
 		}
 
 		if (isset($this->category->{'category_' . $name})) {

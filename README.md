@@ -4,6 +4,8 @@ An OOP layer for Wordpress
 # Main features
 - All get methods allow you to find by ID or slug Waly::getPost(1) vs. Waly::getPost('blog')
 - Object chaining: Waly::getPost()->author->email
+- Extended objects: Waly::getCategory()->link // Calls get_category_link($id)
+- Fix the naming convention of WP object parameters: Waly::getCategory()->id // Fixing the dumb Waly::getCategory()->cat_ID
 
 # Usage
 ```php
@@ -47,6 +49,10 @@ $categories = Waly::getcategories();
  */
 $category = Waly::getCategory(1); // ID
 $category = Waly::getCategory('news'); // ID
+
+// Category content
+$category->id
+$category->link
 
 
 /**
