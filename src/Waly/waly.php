@@ -71,4 +71,16 @@ class Waly {
 
 	}
 
+	public static function getCategory($id)
+	{
+		if (is_int($id)) {
+			return get_category($id);
+		} else if (is_string($id)) {
+			return get_category_by_slug($id);
+		} else {
+			throw new \Exception("Unknown category ID. Unable to return category");
+		}
+
+	}
+
 }
