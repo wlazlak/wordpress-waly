@@ -1,7 +1,11 @@
 # Waly
 An OOP layer for Wordpress 
 
-## Usage
+# Main features
+- All get methods allow you to find by ID or slug Waly::getPost(1) vs. Waly::getPost('blog')
+- Object chaining: Waly::getPost()->author->email
+
+# Usage
 ```php
 use Lucien144\Wordpress\Waly\Waly;
 
@@ -10,7 +14,9 @@ use Lucien144\Wordpress\Waly\Waly;
  * Post
  * @var Lucien144\Wordpress\Waly\Post
  */
-$page = Waly::getPost();
+$page = Waly::getPost(); // Current page/post
+$page = Waly::getPost(1); // Find by ID
+$page = Waly::getPost('blog'); // Find by slug
 $articles = Waly::getPosts('blog'); // Category slug or ID
 
 // Featured image
@@ -33,7 +39,14 @@ $page->excerpt
  * Categories
  * @type Array of Lucien144\Wordpress\Waly\Category
  */
-$categories = Waly::getcategories(); // slug or ID
+$categories = Waly::getcategories();
+
+/**
+ * Category
+ * @var Lucien144\Wordpress\Waly\Category
+ */
+$category = Waly::getCategory(1); // ID
+$category = Waly::getCategory('news'); // ID
 
 
 /**
