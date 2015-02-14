@@ -1,0 +1,19 @@
+{
+	"name": "Waly",
+	"description": "Waly: an oop layer for Wordpress",
+	"keywords": ["wordpress", "oop", "layer", "templates"],
+	"homepage": "https://github.com/lucien144/wordpress-waly",
+	"license": ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
+	"authors": [
+		{
+			"name": "Jan Blasko",
+			"homepage": "http://lucien144.net"
+		}
+	],
+	"require": {
+		"php": ">=5.2.0"
+	},
+	"autoload": {
+		"classmap": ["src"]
+	}
+}
