@@ -2,7 +2,7 @@
 An OOP layer for Wordpress 
 
 ## Usage
-```
+```php
 use Lucien144\Wordpress\Waly\Waly;
 
 
