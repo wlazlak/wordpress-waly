@@ -19,7 +19,7 @@ class Waly {
 
 	public static function getPosts($category, $limit = 10000, $orderby = 'date', $order = 'asc', $offset = 0, $postType = 'post', $postStatus = 'publish')
 	{
-		$return = [];
+		$return = array();
 
 		$args = array(
 			'posts_per_page'   => $limit,
@@ -28,6 +28,24 @@ class Waly {
 			'order'            => $order,
 			'post_status'      => $postStatus,
 		);
+		/*
+		$args = array(
+		'posts_per_page'   => 5,
+		'offset'           => 0,
+		'category'         => '',
+		'category_name'    => '',
+		'orderby'          => 'post_date',
+		'order'            => 'DESC',
+		'include'          => '',
+		'exclude'          => '',
+		'meta_key'         => '',
+		'meta_value'       => '',
+		'post_type'        => 'post',
+		'post_mime_type'   => '',
+		'post_parent'      => '',
+		'post_status'      => 'publish',
+		'suppress_filters' => true );
+		 */
 
 		if (is_int($category)) {
 			$args['category'] = $category;
@@ -41,6 +59,43 @@ class Waly {
 		}
 
 		return $return;
+	}
+
+
+	public function getPostsAfter($date, $category, $limit = 10000, $orderby = 'date', $order = 'asc', $offset = 0, $postType = 'post', $postStatus = 'publish')
+	{
+		$return = array();
+        
+		if (is_numeric($date)) {
+			$date = date('Y-m-d H:i:s', $date);
+		}
+
+        $args = array(
+			'post_type'      => 'post',
+			'posts_per_page' => $limit,
+			'offset'         => $offset,
+			'orderby'        => $orderby,
+			'order'          => $order,
+			'post_status'    => $postStatus,
+			'date_query'     => array(
+                'column'  => 'post_date',
+                'after'   => $date
+            )
+        );
+
+		if (is_int($category)) {
+			$args['category'] = $category;
+		} elseif (is_string($category)) {
+			$args['category_name'] = $category;
+		}
+
+		$posts = new \WP_Query( $args );
+		foreach ($posts->posts as $post) {
+			$return[] = new Post($post);
+		}
+
+		return $return;
+
 	}
 
 
