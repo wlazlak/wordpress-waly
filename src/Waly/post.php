@@ -57,6 +57,11 @@ class Post {
 		return $this->post->ID;
 	}
 
+	public function date()
+	{
+		return new \DateTime($this->post->post_date);
+	}
+
 	public function author()
 	{
 		return new Author($this->post->post_author);
