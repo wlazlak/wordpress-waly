@@ -62,10 +62,8 @@ class Waly {
 			'hierarchical' => array(TRUE, FALSE),
 		);
 		foreach ($allowedArgValues as $argument => $values) {
-			foreach ($values as $value) {
-				if (!in_array($value, $$argument)) {
-					throw new \Exception("Unknow argumenta value '{$value}' for argument '{$argument}' in method '{" . __FUNCTION__ . "}'");
-				}
+			if (!in_array($$argument, $values)) {
+				throw new \Exception("Unknown argument value '{$$argument}' for argument '{$argument}' in method Wally::'" . __FUNCTION__ . "'");
 			}
 		}
 
@@ -76,12 +74,12 @@ class Waly {
 
 		$args = array(
 			'type'                     => 'post',
-			'child_of'                 => $childOf,
-			'parent'                   => '',
+			'child_of'                 => $hirealchical ? $childOf : '',
+			'parent'                   => $hirealchical ? '' : $childOf,
 			'orderby'                  => $orderby,
 			'order'                    => 'ASC',
-			'hide_empty'               => 0, //!!!!
-			'hierarchical'             => $hierarchical,
+			'hide_empty'               => 0, // Forced
+			'hierarchical'             => 0, // Forced
 			'exclude'                  => '',
 			'include'                  => '',
 			'number'                   => '',
