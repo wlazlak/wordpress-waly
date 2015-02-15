@@ -23,10 +23,8 @@ $page = Waly::getPost('blog'); // Find by slug
 $articles = Waly::getPosts('blog'); // Category slug or ID
 
 // Featured image
-$imgUrl = $page->photo;
-
-// Featured image - resize
 add_image_size("image_300x200", '304', '200'); // Add this to your functions.php
+$imgUrl = $page->photo;
 $imgUrl = $page->photo('image_300x200');
 
 // Content
@@ -35,6 +33,7 @@ $page->id
 $page->title
 $page->content
 $page->excerpt
+$page->date // Instance of \DateTime
 ...
 
 
