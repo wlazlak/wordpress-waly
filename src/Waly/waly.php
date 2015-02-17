@@ -95,7 +95,46 @@ class Waly {
 		}
 
 		return $return;
+	}
 
+	public function getPostsBetween($after, $before, $category, $limit = 10000, $orderby = 'date', $order = 'asc', $offset = 0, $postType = 'post', $postStatus = 'publish')
+	{
+		$return = array();
+        
+		if (is_numeric($after)) {
+			$after = date('Y-m-d H:i:s', $after);
+		}
+		
+		if (is_numeric($before)) {
+			$before = date('Y-m-d H:i:s', $before);
+		}
+
+        $args = array(
+			'post_type'      => 'post',
+			'posts_per_page' => $limit,
+			'offset'         => $offset,
+			'orderby'        => $orderby,
+			'order'          => $order,
+			'post_status'    => $postStatus,
+			'date_query'     => array(
+                'column'  => 'post_date',
+                'after'   => $after,
+                'before'   => $before
+            )
+        );
+
+		if (is_int($category)) {
+			$args['category'] = $category;
+		} elseif (is_string($category)) {
+			$args['category_name'] = $category;
+		}
+
+		$posts = new \WP_Query( $args );
+		foreach ($posts->posts as $post) {
+			$return[] = new Post($post);
+		}
+
+		return $return;
 	}
 
 
