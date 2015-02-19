@@ -3,6 +3,7 @@
 namespace Lucien144\Wordpress\Waly;
 
 use Lucien144\Wordpress\Waly\Post,
+	Lucien144\Wordpress\Waly\Posts,
 	Lucien144\Wordpress\Waly\Category;
 
 class Waly {
@@ -19,46 +20,8 @@ class Waly {
 
 	public static function getPosts($category, $limit = 10000, $orderby = 'date', $order = 'asc', $offset = 0, $postType = 'post', $postStatus = 'publish')
 	{
-		$return = array();
-
-		$args = array(
-			'posts_per_page'   => $limit,
-			'offset'           => $offset,
-			'orderby'          => $orderby,
-			'order'            => $order,
-			'post_status'      => $postStatus,
-		);
-		/*
-		$args = array(
-		'posts_per_page'   => 5,
-		'offset'           => 0,
-		'category'         => '',
-		'category_name'    => '',
-		'orderby'          => 'post_date',
-		'order'            => 'DESC',
-		'include'          => '',
-		'exclude'          => '',
-		'meta_key'         => '',
-		'meta_value'       => '',
-		'post_type'        => 'post',
-		'post_mime_type'   => '',
-		'post_parent'      => '',
-		'post_status'      => 'publish',
-		'suppress_filters' => true );
-		 */
-
-		if (is_int($category)) {
-			$args['category'] = $category;
-		} elseif (is_string($category)) {
-			$args['category_name'] = $category;
-		}
-
-		$posts = get_posts($args);
-		foreach ($posts as $post) {
-			$return[] = new Post($post);
-		}
-
-		return $return;
+		$posts = new Posts($category);
+		return $posts;
 	}
 
 
@@ -194,11 +157,13 @@ class Waly {
 	public static function getCategory($id)
 	{
 		if (is_int($id)) {
-			return get_category($id);
+			$result = get_category($id);
+			return is_object($result) ? new Category($result) : FALSE;
 		} else if (is_string($id)) {
-			return get_category_by_slug($id);
+			$result = get_category_by_slug($id);
+			return is_object($result) ? new Category($result) : FALSE;
 		} else {
-			throw new \Exception("Unknown category ID. Unable to return category");
+			return FALSE;
 		}
 
 	}
