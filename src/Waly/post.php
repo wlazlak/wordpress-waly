@@ -67,6 +67,16 @@ class Post {
 		return new Author($this->post->post_author);
 	}
 
+	public function category()
+	{
+		$categories = $this->post->post_category;
+		$result = array();
+		foreach ($categories as $key) {
+			$result[] = Waly::getCategory($key);
+		}
+		return $result;
+	}
+
 
 	public function link()
 	{
