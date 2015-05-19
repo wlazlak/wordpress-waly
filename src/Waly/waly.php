@@ -18,10 +18,9 @@ class Waly {
 		}
 	}
 
-	public static function getPosts($category, $limit = 10000, $orderby = 'date', $order = 'asc', $offset = 0, $postType = 'post', $postStatus = 'publish')
+	public static function getPosts()
 	{
-		$posts = new Posts($category);
-		return $posts;
+		return new Posts();
 	}
 
 

@@ -19,10 +19,10 @@ class Posts implements \Iterator {
 	private $orderby    = 'date';
 	private $order      = 'asc';
 	private $postStatus = 'publish';
+	private $postType   = 'post';
 
-	public function __construct($category)
+	public function __construct()
 	{
-		$this->category = Waly::getCategory($category);
 		$this->getData();
 	}
 
@@ -54,6 +54,7 @@ class Posts implements \Iterator {
 			'orderby'        => $this->orderby,
 			'order'          => $this->order,
 			'post_status'    => $this->postStatus,
+			'post_type'      => $this->postType,
 		);
 
 		if ($this->category instanceof Category) {
@@ -64,6 +65,20 @@ class Posts implements \Iterator {
 		foreach ($posts as $post) {
 			$this->var[] = new Post($post);
 		}
+	}
+
+	public function category($category)
+	{
+		$this->category = Waly::getCategory($category);
+		$this->getData();
+		return $this;
+	}
+
+	public function type($post_type)
+	{
+		$this->postType = $post_type;
+		$this->getData();
+		return $this;
 	}
 
 	public function limit($limit)
