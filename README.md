@@ -20,7 +20,7 @@ use Lucien144\Wordpress\Waly\Waly;
 $page = Waly::getPost(); // Current page/post
 $page = Waly::getPost(1); // Find by ID
 $page = Waly::getPost('blog'); // Find by slug
-$articles = Waly::getPosts('blog'); // Category slug or ID
+$articles = Waly::getPosts()->category('blog')->type('post')->limit(1);
 
 // Featured image
 add_image_size("image_300x200", '304', '200'); // Add this to your functions.php
