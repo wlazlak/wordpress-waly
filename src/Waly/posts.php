@@ -14,6 +14,20 @@ class Posts implements \Iterator {
 	private $posts = array();
 
 	/**
+	 * Arguments for finding posts
+	 * @var array
+	 */
+	private $args = array(
+		'posts_per_page' => 10000,
+		'offset'         => 0,
+		'orderby'        => 'date',
+		'order'          => 'asc',
+		'post_status'    => 'publish',
+		'post_mime_type' => '',
+		'post_type'      => 'post',
+	);
+
+	/**
 	 * Switcher whether we looking for posts or childs
 	 * @var boolean
 	 */
@@ -23,21 +37,13 @@ class Posts implements \Iterator {
 	 * @var false | Lucien144\Wordpress\Waly\Category
 	 */
 	private $category = NULL;
-	
-	private $limit        = 10000;
-	private $offset       = 0;
-	private $orderby      = 'date';
-	private $order        = 'asc';
-	private $postStatus   = 'publish';
-	private $postMimeType = '';
-	private $postType     = 'post';
 
 	public function __construct()
 	{
 		$this->getData();
 	}
 
-	private function getData($args = NULL) 
+	private function getData() 
 	{
 		$this->posts = array();
 		/*
@@ -59,26 +65,14 @@ class Posts implements \Iterator {
 		'suppress_filters' => true );
 		 */
 
-		if (!is_array($args)) {
-			$args = array(
-				'posts_per_page' => $this->limit,
-				'offset'         => $this->offset,
-				'orderby'        => $this->orderby,
-				'order'          => $this->order,
-				'post_status'    => $this->postStatus,
-				'post_mime_type' => $this->postMimeType,
-				'post_type'      => $this->postType,
-			);
-		}
-
 		if ($this->category instanceof Category) {
-			$args['category'] = $this->category->id;
+			$this->args['category'] = $this->category->id;
 		}
 
 		if (!$this->childSeek) {
-			$posts = get_posts($args);
+			$posts = get_posts($this->args);
 		} else {
-			$posts = get_children($args);
+			$posts = get_children($this->args);
 		}
 		
 		foreach ($posts as $post) {
@@ -95,21 +89,21 @@ class Posts implements \Iterator {
 
 	public function order($orderby)
 	{
-		$this->orderby = $orderby;
+		$this->args['orderby'] = $orderby;
 		$this->getData();
 		return $this;
 	}
 
 	public function type($post_type)
 	{
-		$this->postType = $post_type;
+		$this->args['post_type'] = $post_type;
 		$this->getData();
 		return $this;
 	}
 
 	public function limit($limit)
 	{
-		$this->limit = $limit;
+		$this->args['posts_per_page'] = $limit;
 		$this->getData();
 		return $this;
 	}
@@ -119,22 +113,23 @@ class Posts implements \Iterator {
 		$args = array();
 		
 		// (integer) (optional) Number of child posts to retrieve.
-		$args['numberposts'] = $this->limit;
+		$args['numberposts'] = $this->args['posts_per_page'];
 
 		// (integer) (optional) Pass the ID of a post or Page to get its children. Pass 0 to get attachments without parent. Pass null to get any child regardless of parent.
 		$args['post_parent'] = $id;
 
 		// (string) (optional) Any value from post_type column of the posts table, such as attachment, page, or revision; or the keyword any.
-		$args['post_type'] = $this->postType;
+		$args['post_type'] = $this->args['post_type'];
 
 		// (string) (optional) Any value from the post_status column of the wp_posts table, such as publish, draft, or inherit; or the keyword any.
-		$args['post_status'] = $this->postStatus;
+		$args['post_status'] = $this->args['post_status'];
 
 		// (string) (optional) A full or partial mime-type, e.g. image, video, video/mp4, which is matched against a post's post_mime_type field.
-		$args['post_mime_type'] = $this->postMimeType;
+		$args['post_mime_type'] = $this->args['post_mime_type'];
 		
 		$this->childSeek = TRUE;
-		$this->getData($args);
+		$this->args = $args;
+		$this->getData();
 		return $this;
 	}
 
@@ -151,11 +146,11 @@ class Posts implements \Iterator {
 		}
 		
 		$query = new \WP_Query(array(
-					'posts_per_page'   => $this->limit,
-					'offset'           => $this->offset,
-					'orderby'          => $this->orderby,
-					'order'            => $this->order,
-					'post_status'      => $this->postStatus,
+					'posts_per_page'   => $this->args['posts_per_page'],
+					'offset'           => $this->args['offset'],
+					'orderby'          => $this->args['orderby'],
+					'order'            => $this->args['order'],
+					'post_status'      => $this->args['post_status'],
 					'cat'              => $this->category->id,
 					'category__not_in' => $exclude,
 
