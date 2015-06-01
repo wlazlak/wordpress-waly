@@ -7,7 +7,11 @@ use Lucien144\Wordpress\Waly\Post,
 
 class Posts implements \Iterator {
 
-	private $var = array();
+	/**
+	 * Finded posts.
+	 * @var array of Lucien144\Waly\Post
+	 */
+	private $posts = array();
 
 	/**
 	 * Switcher whether we looking for posts or childs
@@ -35,7 +39,7 @@ class Posts implements \Iterator {
 
 	private function getData($args = NULL) 
 	{
-		$this->var = array();
+		$this->posts = array();
 		/*
 		$args = array(
 		'posts_per_page'   => 5,
@@ -78,7 +82,7 @@ class Posts implements \Iterator {
 		}
 		
 		foreach ($posts as $post) {
-			$this->var[] = new Post($post);
+			$this->posts[] = new Post($post);
 		}
 	}
 
@@ -156,39 +160,39 @@ class Posts implements \Iterator {
 					'category__not_in' => $exclude,
 
 				));
-		$this->var = $query->get_posts();
+		$this->posts = $query->get_posts();
 
 		return $this;
 	}
 
     public function rewind()
     {
-        reset($this->var);
+        reset($this->posts);
     }
   
     public function current()
     {
-        $var = current($this->var);
-        return $var;
+        $post = current($this->posts);
+        return $post;
     }
   
     public function key() 
     {
-        $var = key($this->var);
-        return $var;
+        $post = key($this->posts);
+        return $post;
     }
   
     public function next() 
     {
-        $var = next($this->var);
-        return $var;
+        $post = next($this->posts);
+        return $post;
     }
   
     public function valid()
     {
-        $key = key($this->var);
-        $var = ($key !== NULL && $key !== FALSE);
-        return $var;
+        $key = key($this->posts);
+        $post = ($key !== NULL && $key !== FALSE);
+        return $post;
     }
 
 }
