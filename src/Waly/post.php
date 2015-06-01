@@ -83,6 +83,11 @@ class Post {
 		return get_permalink($this->post->ID);
 	}
 
+	public function children()
+	{	
+		return Waly::getPosts()->children($this->post->ID);
+	}
+
 	public function __get($name)
 	{
 

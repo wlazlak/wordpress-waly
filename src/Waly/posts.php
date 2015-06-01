@@ -10,23 +10,30 @@ class Posts implements \Iterator {
 	private $var = array();
 
 	/**
+	 * Switcher whether we looking for posts or childs
+	 * @var boolean
+	 */
+	private $childSeek = FALSE;
+
+	/**
 	 * @var false | Lucien144\Wordpress\Waly\Category
 	 */
 	private $category = NULL;
-
-	private $limit      = 10000;
-	private $offset     = 0;
-	private $orderby    = 'date';
-	private $order      = 'asc';
-	private $postStatus = 'publish';
-	private $postType   = 'post';
+	
+	private $limit        = 10000;
+	private $offset       = 0;
+	private $orderby      = 'date';
+	private $order        = 'asc';
+	private $postStatus   = 'publish';
+	private $postMimeType = '';
+	private $postType     = 'post';
 
 	public function __construct()
 	{
 		$this->getData();
 	}
 
-	private function getData() 
+	private function getData($args = NULL) 
 	{
 		$this->var = array();
 		/*
@@ -48,20 +55,28 @@ class Posts implements \Iterator {
 		'suppress_filters' => true );
 		 */
 
-		$args = array(
-			'posts_per_page' => $this->limit,
-			'offset'         => $this->offset,
-			'orderby'        => $this->orderby,
-			'order'          => $this->order,
-			'post_status'    => $this->postStatus,
-			'post_type'      => $this->postType,
-		);
+		if (!is_array($args)) {
+			$args = array(
+				'posts_per_page' => $this->limit,
+				'offset'         => $this->offset,
+				'orderby'        => $this->orderby,
+				'order'          => $this->order,
+				'post_status'    => $this->postStatus,
+				'post_mime_type' => $this->postMimeType,
+				'post_type'      => $this->postType,
+			);
+		}
 
 		if ($this->category instanceof Category) {
 			$args['category'] = $this->category->id;
 		}
 
-		$posts = get_posts($args);
+		if (!$this->childSeek) {
+			$posts = get_posts($args);
+		} else {
+			$posts = get_children($args);
+		}
+		
 		foreach ($posts as $post) {
 			$this->var[] = new Post($post);
 		}
@@ -70,6 +85,13 @@ class Posts implements \Iterator {
 	public function category($category)
 	{
 		$this->category = Waly::getCategory($category);
+		$this->getData();
+		return $this;
+	}
+
+	public function order($orderby)
+	{
+		$this->orderby = $orderby;
 		$this->getData();
 		return $this;
 	}
@@ -85,6 +107,30 @@ class Posts implements \Iterator {
 	{
 		$this->limit = $limit;
 		$this->getData();
+		return $this;
+	}
+
+	public function children($id)
+	{
+		$args = array();
+		
+		// (integer) (optional) Number of child posts to retrieve.
+		$args['numberposts'] = $this->limit;
+
+		// (integer) (optional) Pass the ID of a post or Page to get its children. Pass 0 to get attachments without parent. Pass null to get any child regardless of parent.
+		$args['post_parent'] = $id;
+
+		// (string) (optional) Any value from post_type column of the posts table, such as attachment, page, or revision; or the keyword any.
+		$args['post_type'] = $this->postType;
+
+		// (string) (optional) Any value from the post_status column of the wp_posts table, such as publish, draft, or inherit; or the keyword any.
+		$args['post_status'] = $this->postStatus;
+
+		// (string) (optional) A full or partial mime-type, e.g. image, video, video/mp4, which is matched against a post's post_mime_type field.
+		$args['post_mime_type'] = $this->postMimeType;
+		
+		$this->childSeek = TRUE;
+		$this->getData($args);
 		return $this;
 	}
 
