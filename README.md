@@ -20,7 +20,7 @@ use Lucien144\Wordpress\Waly\Waly;
 $page = Waly::getPost(); // Current page/post
 $page = Waly::getPost(1); // Find by ID
 $page = Waly::getPost('blog'); // Find by slug
-$subpages = Waly::getPost('dining')->children()->type('page')->limit(2); // Find all subpages
+$subpages = Waly::getPost('dining')->children()->type('page')->order('date')->dir('DESC')->limit(2); // Find all subpages
 $articles = Waly::getPosts()->category('blog')->type('post')->limit(1);
 
 // Featured image

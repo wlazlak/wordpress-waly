@@ -43,7 +43,7 @@ class Posts implements \Iterator {
 		$this->getData();
 	}
 
-	private function getData() 
+	private function getData()
 	{
 		$this->posts = array();
 		/*
@@ -74,7 +74,7 @@ class Posts implements \Iterator {
 		} else {
 			$posts = get_children($this->args);
 		}
-		
+
 		foreach ($posts as $post) {
 			$this->posts[] = new Post($post);
 		}
@@ -90,6 +90,16 @@ class Posts implements \Iterator {
 	public function order($orderby)
 	{
 		$this->args['orderby'] = $orderby;
+		$this->getData();
+		return $this;
+	}
+
+	public function dir($order)
+	{
+		if (!in_array($order, array('asc', 'desc'))) {
+			$order = 'ASC';
+		}
+		$this->args['order'] = $order;
 		$this->getData();
 		return $this;
 	}
@@ -111,7 +121,7 @@ class Posts implements \Iterator {
 	public function children($id)
 	{
 		$args = array();
-		
+
 		// (integer) (optional) Number of child posts to retrieve.
 		$args['numberposts'] = $this->args['posts_per_page'];
 
@@ -126,7 +136,7 @@ class Posts implements \Iterator {
 
 		// (string) (optional) A full or partial mime-type, e.g. image, video, video/mp4, which is matched against a post's post_mime_type field.
 		$args['post_mime_type'] = $this->args['post_mime_type'];
-		
+
 		$this->childSeek = TRUE;
 		$this->args = $args;
 		$this->getData();
@@ -138,13 +148,13 @@ class Posts implements \Iterator {
 		if (!$this->category instanceof Category) {
 			throw new \Exception('Category has to be known to exclude its childs.');
 		}
-		
+
 		$categories = Waly::getCategories($this->category->id);
 		$exclude = array();
 		foreach ($categories as $category) {
 			$exclude[] = $category->id;
 		}
-		
+
 		$query = new \WP_Query(array(
 					'posts_per_page'   => $this->args['posts_per_page'],
 					'offset'           => $this->args['offset'],
@@ -164,25 +174,25 @@ class Posts implements \Iterator {
     {
         reset($this->posts);
     }
-  
+
     public function current()
     {
         $post = current($this->posts);
         return $post;
     }
-  
-    public function key() 
+
+    public function key()
     {
         $post = key($this->posts);
         return $post;
     }
-  
-    public function next() 
+
+    public function next()
     {
         $post = next($this->posts);
         return $post;
     }
-  
+
     public function valid()
     {
         $key = key($this->posts);
