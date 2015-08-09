@@ -8,7 +8,7 @@ use Lucien144\Wordpress\Waly\Post,
 
 class Waly {
 
-	public function getPost($id = NULL) {
+	public static function getPost($id = NULL) {
 		if (is_string($id)) {
 			global $wpdb;
 			$id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_name = '" . mysql_escape_string($id) . "'");
@@ -24,10 +24,10 @@ class Waly {
 	}
 
 
-	public function getPostsAfter($date, $category, $limit = 10000, $orderby = 'date', $order = 'asc', $offset = 0, $postType = 'post', $postStatus = 'publish')
+	public static function getPostsAfter($date, $category, $limit = 10000, $orderby = 'date', $order = 'asc', $offset = 0, $postType = 'post', $postStatus = 'publish')
 	{
 		$return = array();
-        
+
 		if (is_numeric($date)) {
 			$date = date('Y-m-d H:i:s', $date);
 		}
@@ -59,14 +59,14 @@ class Waly {
 		return $return;
 	}
 
-	public function getPostsBetween($after, $before, $category, $limit = 10000, $orderby = 'date', $order = 'asc', $offset = 0, $postType = 'post', $postStatus = 'publish')
+	public static function getPostsBetween($after, $before, $category, $limit = 10000, $orderby = 'date', $order = 'asc', $offset = 0, $postType = 'post', $postStatus = 'publish')
 	{
 		$return = array();
-        
+
 		if (is_numeric($after)) {
 			$after = date('Y-m-d H:i:s', $after);
 		}
-		
+
 		if (is_numeric($before)) {
 			$before = date('Y-m-d H:i:s', $before);
 		}
@@ -108,7 +108,7 @@ class Waly {
 	 * @param  boolean $hierarchical  When true, the results will include sub-categories that are empty, as long as those sub-categories have sub-categories that are not empty.
 	 * @return array|exception
 	 */
-	public function getCategories($childOf = 0, $orderby = 'name', $order = 'ASC', $hierarchical = FALSE)
+	public static function getCategories($childOf = 0, $orderby = 'name', $order = 'ASC', $hierarchical = FALSE)
 	{
 		$return = array();
 
@@ -130,8 +130,8 @@ class Waly {
 
 		$args = array(
 			'type'                     => 'post',
-			'child_of'                 => $hirealchical ? $childOf : '',
-			'parent'                   => $hirealchical ? '' : $childOf,
+			'child_of'                 => $hierarchical ? $childOf : '',
+			'parent'                   => $hierarchical ? '' : $childOf,
 			'orderby'                  => $orderby,
 			'order'                    => 'ASC',
 			'hide_empty'               => 0, // Forced
@@ -140,11 +140,11 @@ class Waly {
 			'include'                  => '',
 			'number'                   => '',
 			'taxonomy'                 => 'category',
-			'pad_counts'               => false 
+			'pad_counts'               => false
 
-		); 
+		);
 		$categories = get_categories( $args );
-		
+
 		foreach($categories as $category) {
 			$return[] = new Category($category);
 		}
